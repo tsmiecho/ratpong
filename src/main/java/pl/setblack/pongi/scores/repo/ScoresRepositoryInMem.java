@@ -6,7 +6,9 @@ import javaslang.control.Option;
 import pl.setblack.pongi.scores.ScoreRecord;
 import pl.setblack.pongi.scores.UserScore;
 
-public class ScoresRepositoryInMem implements ScoresRepository{
+import java.io.Serializable;
+
+public class ScoresRepositoryInMem implements ScoresRepository, Serializable {
 
     private static final long serialVersionUID = 1L;
 
