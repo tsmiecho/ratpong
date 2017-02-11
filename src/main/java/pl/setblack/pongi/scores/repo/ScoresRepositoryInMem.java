@@ -2,24 +2,27 @@ package pl.setblack.pongi.scores.repo;
 
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
-import javaslang.collection.PriorityQueue;
 import javaslang.control.Option;
 import pl.setblack.pongi.scores.ScoreRecord;
 import pl.setblack.pongi.scores.UserScore;
 
-import java.util.Comparator;
-
 public class ScoresRepositoryInMem implements ScoresRepository{
 
+    private static final long serialVersionUID = 1L;
 
-    public ScoresRepositoryInMem() {
-
-    }
+    private volatile HashMap<String, UserScore> scores = HashMap.empty();
 
 
     @Override
     public void registerScore(List<ScoreRecord> rec) {
-        throw new UnsupportedOperationException();
+        rec.forEach(singleRecord -> {
+            scores
+                    .get(singleRecord.userId)
+                    .orElse(Option.some(UserScore.emptyFor(singleRecord.userId)))
+                    .forEach(oldRecord -> scores = scores.put(singleRecord.userId, oldRecord.add(singleRecord)));
+        });
+        System.out.println("rejestracja wyniku" );
+        System.out.println(rec);
     }
 
 
@@ -30,8 +33,10 @@ public class ScoresRepositoryInMem implements ScoresRepository{
 
     @Override
     public List<UserScore> getTopScores(int limit) {
-        throw new UnsupportedOperationException();
+        return this.scores.values()
+                .sortBy(score -> score.totalScore).reverse().take(limit).toList();
     }
+
 
 
 }

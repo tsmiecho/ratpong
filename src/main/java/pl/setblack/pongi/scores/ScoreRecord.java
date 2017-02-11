@@ -25,4 +25,23 @@ public class ScoreRecord {
         this.opponentScore = opponentScore;
         this.gameId = gameId;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ScoreRecord{");
+        sb.append("userId='")
+                .append(userId)
+                .append('\'');
+        sb.append(", result=")
+                .append(result);
+        sb.append(", playerScored=")
+                .append(playerScored);
+        sb.append(", opponentScore=")
+                .append(opponentScore);
+        sb.append(", gameId='")
+                .append(gameId)
+                .append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }

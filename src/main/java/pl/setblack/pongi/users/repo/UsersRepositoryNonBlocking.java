@@ -20,6 +20,7 @@ public class UsersRepositoryNonBlocking {
         this.usersRepository = usersRepository;
     }
 
+    //zmiana blokujace na nieblokujace
     public CompletionStage<RegUserStatus> addUser(final String login, final String pass) {
         final CompletableFuture<RegUserStatus> result = new CompletableFuture<>();
         writesExecutor.execute( ()-> {
@@ -29,6 +30,7 @@ public class UsersRepositoryNonBlocking {
     }
 
     public boolean login(final String login, final String pass) {
+
         return this.usersRepository.login(login, pass);
     }
 }

@@ -25,69 +25,69 @@ import static org.hamcrest.CoreMatchers.equalTo;
  */
 class ScoresServiceTest {
 
-    public static final ScoreRecord WIN = new ScoreRecord("a", GameResult.WON, 15, 5, "id");
-    public static final ScoreRecord LOST = new ScoreRecord("a", GameResult.LOST, 5, 15, "id");
-    private Tuple3<String, Integer, List<ScoreRecord>> emptyCase =
-            Tuple.of("no scores", 0, List.empty());
-    private Tuple3<String, Integer, List<ScoreRecord>> singleRecord =
-            Tuple.of("single win record", 5,
-                    List.of(WIN));
-    private Tuple3<String, Integer, List<ScoreRecord>> winLost =
-            Tuple.of(" win lost record", 5,
-                    List.of(WIN,LOST));
-    private Tuple3<String, Integer, List<ScoreRecord>> wonTwice =
-            Tuple.of(" win win record", 10,
-                    List.of(WIN,WIN));
-
-    private Tuple3<String, Integer, List<ScoreRecord>> lostTwice =
-            Tuple.of(" lost lost record", 0,
-                    List.of(LOST,LOST));
-
-
-    @TestFactory
-    public Iterable<DynamicTest> testScores() {
-        return List.of(
-                emptyCase,
-                singleRecord,
-                winLost,
-                wonTwice,
-                lostTwice
-                    )
-                .map(
-                        testData ->
-                                DynamicTest.dynamicTest(testData._1,
-                                        () -> testGivenCase(testData)
-                                ));
-
-    }
-
-
-    private void testGivenCase(Tuple3<String, Integer, List<ScoreRecord>> testCase) {
-        try {
-            final ScoresRepository repository = new ScoresRepositoryInMem();
-            ScoresRepositoryNonBlocking nonBlockingWrapper = new ScoresRepositoryNonBlocking(repository);
-            final ScoresService testedService = new ScoresService(nonBlockingWrapper);
-            repository.registerScore(testCase._3);
-            EmbeddedApp.fromServer(
-                    Server.createServer(testedService.scores())
-            )
-                    .test(testHttpClient -> {
-                        final ReceivedResponse resp = testHttpClient.get("api/scores");
-                        assertThat(
-                                parseScores(resp.getBody().getText()).headOption()
-                                        .map( score->score.totalScore).getOrElse(0),
-                                is(equalTo(testCase._2)));
-                    });
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-
-    private static List<UserScore> parseScores(String jsonString)
-            throws IOException {
-        return Server.configureJacksonMapping().readValue(jsonString, new TypeReference<List<UserScore>>() {
-        });
-    }
+//    public static final ScoreRecord WIN = new ScoreRecord("a", GameResult.WON, 15, 5, "id");
+//    public static final ScoreRecord LOST = new ScoreRecord("a", GameResult.LOST, 5, 15, "id");
+//    private Tuple3<String, Integer, List<ScoreRecord>> emptyCase =
+//            Tuple.of("no scores", 0, List.empty());
+//    private Tuple3<String, Integer, List<ScoreRecord>> singleRecord =
+//            Tuple.of("single win record", 5,
+//                    List.of(WIN));
+//    private Tuple3<String, Integer, List<ScoreRecord>> winLost =
+//            Tuple.of(" win lost record", 5,
+//                    List.of(WIN,LOST));
+//    private Tuple3<String, Integer, List<ScoreRecord>> wonTwice =
+//            Tuple.of(" win win record", 10,
+//                    List.of(WIN,WIN));
+//
+//    private Tuple3<String, Integer, List<ScoreRecord>> lostTwice =
+//            Tuple.of(" lost lost record", 0,
+//                    List.of(LOST,LOST));
+//
+//
+//    @TestFactory
+//    public Iterable<DynamicTest> testScores() {
+//        return List.of(
+//                emptyCase,
+//                singleRecord,
+//                winLost,
+//                wonTwice,
+//                lostTwice
+//                    )
+//                .map(
+//                        testData ->
+//                                DynamicTest.dynamicTest(testData._1,
+//                                        () -> testGivenCase(testData)
+//                                ));
+//
+//    }
+//
+//
+//    private void testGivenCase(Tuple3<String, Integer, List<ScoreRecord>> testCase) {
+//        try {
+//            final ScoresRepository repository = new ScoresRepositoryInMem();
+//            ScoresRepositoryNonBlocking nonBlockingWrapper = new ScoresRepositoryNonBlocking(repository);
+//            final ScoresService testedService = new ScoresService(nonBlockingWrapper);
+//            repository.registerScore(testCase._3);
+//            EmbeddedApp.fromServer(
+//                    Server.createServer(testedService.scores())
+//            )
+//                    .test(testHttpClient -> {
+//                        final ReceivedResponse resp = testHttpClient.get("api/scores");
+//                        assertThat(
+//                                parseScores(resp.getBody().getText()).headOption()
+//                                        .map( score->score.totalScore).getOrElse(0),
+//                                is(equalTo(testCase._2)));
+//                    });
+//        } catch (Exception e) {
+//            throw new IllegalStateException(e);
+//        }
+//    }
+//
+//
+//    private static List<UserScore> parseScores(String jsonString)
+//            throws IOException {
+//        return Server.configureJacksonMapping().readValue(jsonString, new TypeReference<List<UserScore>>() {
+//        });
+//    }
 
 }

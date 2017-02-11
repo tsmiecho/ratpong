@@ -15,21 +15,31 @@ import java.util.concurrent.Executors;
  */
 public class ScoresRepositoryNonBlocking {
 
+    private final ScoresRepository scoresRepository;
 
+    private final Executor writesExecutor = Executors.newSingleThreadExecutor();
 
     public ScoresRepositoryNonBlocking(ScoresRepository repository) {
-
+        this.scoresRepository = repository;
     }
 
     public void registerScore(List<ScoreRecord> rec){
-
+        writesExecutor.execute(() -> scoresRepository.registerScore(rec));
     }
 
     public CompletionStage<Option<UserScore>> getUserScore(String userId) {
-       throw new UnsupportedOperationException();
+        final CompletableFuture<Option<UserScore>> result = new CompletableFuture<>();
+        writesExecutor.execute( ()-> {
+            result.complete(this.scoresRepository.getUserScore(userId));
+        });
+        return result;
     }
 
     public CompletionStage<List<UserScore>> getTopScores(final int limit) {
-        throw new UnsupportedOperationException();
+        final CompletableFuture<List<UserScore>> result = new CompletableFuture<>();
+        writesExecutor.execute( ()-> {
+            result.complete(this.scoresRepository.getTopScores(limit));
+        });
+        return result;
     }
 }

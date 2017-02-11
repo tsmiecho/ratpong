@@ -4,7 +4,6 @@ import javaslang.control.Option;
 import pl.setblack.pongi.users.api.LoginData;
 import pl.setblack.pongi.users.api.NewUser;
 import pl.setblack.pongi.users.repo.SessionsRepo;
-import pl.setblack.pongi.users.repo.UsersRepoES;
 import pl.setblack.pongi.users.repo.UsersRepository;
 import pl.setblack.pongi.users.repo.UsersRepositoryNonBlocking;
 import ratpack.exec.Promise;
@@ -50,7 +49,7 @@ public class UsersService {
             final String userId = ctx.getPathTokens().get("id");
             ctx.parse(NewUser.class).then(
                     newUser -> {
-                        final Promise result = Promise.async(
+                        final Promise result = Promise.async( //przerabianie promisa z javy 8 na ratpackowego
                                 d -> d.accept(usersRepo.addUser(userId, newUser.password).thenApply(Jackson::json)
                                 ));
                         ctx.render(result);

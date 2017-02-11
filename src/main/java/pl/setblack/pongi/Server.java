@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import javaslang.control.Try;
 import javaslang.jackson.datatype.JavaslangModule;
-import pl.setblack.badass.Politician;
 import pl.setblack.pongi.games.GamesService;
 import pl.setblack.pongi.scores.ScoresService;
 import pl.setblack.pongi.users.UsersService;
@@ -69,7 +68,7 @@ public class Server {
         return apiChain -> apiChain
                 .insert(usersService.usersApi())
                 .prefix("games", gamesService.define())
-                .prefix("score", score->score.get("scores", ctx->ctx.render("[]")));
+                .prefix("score", scoresService.scores());
     }
 
     private static RatpackServerSpec createEmptyServer(RatpackServerSpec initial)
